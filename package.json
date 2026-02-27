@@ -1,0 +1,31 @@
+{
+  "name": "stack-explain",
+  "version": "1.0.0",
+  "description": "Paste a stack trace, get a human explanation",
+  "type": "module",
+  "bin": {
+    "stack-explain": "./bin/explain.js"
+  },
+  "scripts": {
+    "start": "node bin/explain.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "stack-trace",
+    "debugging",
+    "cli",
+    "anthropic",
+    "claude",
+    "developer-tools"
+  ],
+  "author": "NickCirv <nick@cirvgreen.com>",
+  "license": "MIT"
+}
