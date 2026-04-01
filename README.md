@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # stack-explain
 
 Paste a stack trace, get a plain-English explanation and a concrete fix.
