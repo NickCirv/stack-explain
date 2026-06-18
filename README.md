@@ -1,44 +1,19 @@
-![Banner](banner.svg)
+![stack-explain — paste a stack trace, get a plain-English explanation and a concrete fix](assets/banner.png)
 
-# stack-explain
+<div align="center">
 
-Paste a stack trace, get a plain-English explanation and a concrete fix.
+**Turn unreadable stack traces into plain English — root cause, why it happened, and the exact fix.**
 
-<p align="center">
-  <img src="https://img.shields.io/npm/v/stack-explain.svg" alt="npm version" />
-  <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg" alt="node >= 18" />
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license" />
-</p>
+![license](https://img.shields.io/badge/license-MIT-blue?labelColor=0B0A09)
+![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?labelColor=0B0A09)
+![languages](https://img.shields.io/badge/languages-7-8B92F6?labelColor=0B0A09)
+![patterns](https://img.shields.io/badge/error%20patterns-19-8B92F6?labelColor=0B0A09)
 
-## Why
+</div>
 
-Stack traces are written for machines. `stack-explain` translates them for humans — what went wrong, why it happened, and what to do about it. Supports JavaScript, TypeScript, Python, Java, Go, and Rust errors. Works offline with pattern-matching; optionally uses Claude AI for deeper analysis on unfamiliar errors.
+---
 
-## Quick Start
-
-```bash
-npx stack-explain
-```
-
-Paste your stack trace when prompted, or pipe it in:
-
-```bash
-cat error.log | npx stack-explain
-```
-
-## What It Explains
-
-| Error Type | Examples |
-|-----------|---------|
-| **JavaScript** | `TypeError: Cannot read properties of null`, `TypeError: x is not a function`, `ReferenceError: x is not defined`, `SyntaxError` |
-| **Node.js** | `ENOENT: no such file or directory`, `EACCES: permission denied`, `ECONNREFUSED`, `ETIMEDOUT` |
-| **Python** | `ModuleNotFoundError`, `ImportError`, `AttributeError`, `KeyError`, `IndexError` |
-| **Java** | `NullPointerException`, `ClassCastException` |
-| **JVM/Runtime** | `StackOverflowError`, `OutOfMemoryError` |
-| **Go** | `panic: ...` |
-| **Rust** | Thread panics, `unwrap()` failures |
-
-## Example Output
+Stack traces are written for runtimes, not humans. `stack-explain` reads the trace, identifies the error class, and returns a plain-English explanation with a targeted fix. Works offline via built-in pattern matching for 19 common error types across 7 languages; optionally escalates to Claude AI for errors it doesn't recognise.
 
 ```
   stack-explain
@@ -66,35 +41,79 @@ cat error.log | npx stack-explain
   Source: local pattern match
 ```
 
-## Options
+## Install
+
+No global install needed — run directly from GitHub:
+
+```bash
+npx github:NickCirv/stack-explain
+```
+
+## Usage
+
+```bash
+# Paste a stack trace interactively
+npx github:NickCirv/stack-explain
+
+# Pipe it in from a log file
+cat error.log | npx github:NickCirv/stack-explain
+
+# Read from a file
+npx github:NickCirv/stack-explain --file crash.log
+
+# Hint the language for faster matching
+npx github:NickCirv/stack-explain --lang py
+
+# Use Claude AI for unfamiliar errors
+export ANTHROPIC_API_KEY=your-key
+npx github:NickCirv/stack-explain --ai
+```
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--ai` | Use Claude AI for unfamiliar errors (requires `ANTHROPIC_API_KEY`) | off |
-| `--file <path>` | Read stack trace from a file | stdin |
-| `--lang <language>` | Hint the language (js, py, java, go, rust) | auto-detected |
+| `--ai` | Use Claude AI for errors outside built-in patterns (requires `ANTHROPIC_API_KEY`) | off |
+| `--file <path>` | Read stack trace from a file instead of stdin | stdin |
+| `--lang <language>` | Hint the language (`js`, `py`, `java`, `go`, `rust`) | auto-detected |
 
-## Use with Claude AI
+## What it explains
 
-Set your API key to enable AI-powered explanations for errors that don't match known patterns:
+| Language | Error types |
+|----------|-------------|
+| **JavaScript / TypeScript** | `TypeError`, `ReferenceError`, `SyntaxError` |
+| **Node.js** | `ENOENT`, `EACCES`, `ECONNREFUSED`, `ETIMEDOUT` |
+| **Python** | `ModuleNotFoundError`, `ImportError`, `AttributeError`, `KeyError`, `IndexError` |
+| **Java** | `NullPointerException`, `ClassCastException` |
+| **JVM / Runtime** | `StackOverflowError`, `OutOfMemoryError` |
+| **Go** | `panic: ...` |
+| **Rust** | Thread panics, `unwrap()` failures |
+
+## Claude AI mode
+
+For errors that don't match built-in patterns, pass `--ai` and set your key:
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
-npx stack-explain --ai
+export ANTHROPIC_API_KEY=your-key
+npx github:NickCirv/stack-explain --ai
 ```
+
+`stack-explain` falls back to the AI only when pattern matching returns no match — so common errors stay instant and offline.
 
 ## Use in CI
 
-```bash
-npm test 2>&1 | npx stack-explain --file /dev/stdin
-```
-
-## Install Globally
+Pipe failing test output through `stack-explain` to get human-readable failure summaries in your CI logs:
 
 ```bash
-npm i -g stack-explain
+npm test 2>&1 | npx github:NickCirv/stack-explain --file /dev/stdin
 ```
 
-## License
+## What it is NOT
 
-MIT
+- **Not a debugger or profiler.** It explains what an error means and suggests a fix — it doesn't step through your code or measure performance.
+- **Not a guarantee.** Pattern matching covers the 19 most common error classes. Novel or framework-specific errors may fall through to the generic fallback or AI mode.
+- **Not a replacement for reading the docs.** The fix suggestions are a starting point. Deep bugs in your business logic still need your eyes on the code.
+
+---
+
+<div align="center">
+<sub>Node 18+ · MIT · by <a href="https://github.com/NickCirv">NickCirv</a></sub>
+</div>
