@@ -23,7 +23,7 @@ const PATTERNS = [
     type: 'ReferenceError',
     explain: (m) =>
       `\`${m[1]}\` doesn't exist in scope at the point where you're using it. It was never declared, or it's declared in a different scope.`,
-    fix: `Declare \`${m[1]}\` before using it, or check that it's imported/exported correctly.`,
+    fix: (m) => `Declare \`${m[1]}\` before using it, or check that it's imported/exported correctly.`,
   },
   {
     match: /ENOENT:\s+no such file or directory/i,
@@ -58,7 +58,7 @@ const PATTERNS = [
     type: 'ModuleNotFoundError',
     explain: (m) =>
       `Python can't find the module \`${m[1]}\`. It's either not installed or not on the Python path.`,
-    fix: `Run \`pip install ${m[1]}\` (or \`pip3 install ${m[1]}\`). If it's your own module, check your working directory and PYTHONPATH.`,
+    fix: (m) => `Run \`pip install ${m[1]}\` (or \`pip3 install ${m[1]}\`). If it's your own module, check your working directory and PYTHONPATH.`,
   },
   {
     match: /ImportError:\s+cannot import name '([^']+)'/i,
@@ -121,14 +121,14 @@ const PATTERNS = [
     type: 'AttributeError',
     explain: (m) =>
       `A \`${m[1]}\` object doesn't have an attribute called \`${m[2]}\`. You're accessing something that doesn't exist on this type.`,
-    fix: `Run \`dir(your_object)\` in a Python shell to see what's available. Check for typos in \`${m[2]}\`.`,
+    fix: (m) => `Run \`dir(your_object)\` in a Python shell to see what's available. Check for typos in \`${m[2]}\`.`,
   },
   {
     match: /KeyError:\s+'?([^'\n]+)'?/i,
     type: 'KeyError',
     explain: (m) =>
       `You tried to access key \`${m[1]}\` in a dict, but that key doesn't exist.`,
-    fix: `Use \`dict.get('${m[1].trim()}', default_value)\` to avoid the error, or check with \`'${m[1].trim()}' in dict\` before accessing.`,
+    fix: (m) => `Use \`dict.get('${m[1].trim()}', default_value)\` to avoid the error, or check with \`'${m[1].trim()}' in dict\` before accessing.`,
   },
   {
     match: /IndexError:\s+list index out of range/i,
@@ -153,7 +153,7 @@ export function localExplain(parsed) {
     if (match) {
       return {
         explanation: p.explain(match),
-        suggestedFix: p.fix,
+        suggestedFix: typeof p.fix === 'function' ? p.fix(match) : p.fix,
         source: 'local',
       }
     }
